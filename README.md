@@ -133,8 +133,9 @@ CLI or choose a deployment region for you.
    Keep the app at the repository root, not under `samples/mcp-server`.
 2. In the App Service Builder Portal, create a test app and select **your own
    authorized repository and branch** as its source. Use `/` as the source root.
-   The included `builder.yaml` declares a Node 24 web component on port 8080,
-   starts `node server.mjs`, and probes `/health` for status `200`.
+   The included `builder.yaml` declares a Node 24 web component, starts
+   `node server.mjs`, and probes `/health`. It uses the single-component defaults
+   for the repository root (`/`), port `8080`, and exact health status `200`.
 3. Configure `APP_API_TOKEN` securely through the app's runtime **Variables**.
    Use the generated token, not the placeholder text or a committed `.env` file.
    `PUBLIC_ORIGIN` is optional for clients supplying Origin; the included Node
