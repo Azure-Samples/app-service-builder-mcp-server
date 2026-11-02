@@ -29,6 +29,28 @@ const headers = {
   Accept: 'application/json, text/event-stream', 'MCP-Protocol-Version': '2025-11-25',
 };
 
+test('public demo is informational HTML and preserves existing route contracts', async (t) => {
+  const request = await fixture(t, {});
+  for (const path of ['/demo', '/demo?scoutTheme=dark']) {
+    const response = await request(path);
+    assert.equal(response.status, 200);
+    assert.match(response.headers.get('content-type'), /text\/html; charset=utf-8/);
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+    const html = await response.text();
+    assert.match(html, /<html lang="en">/);
+    assert.match(html, /text_length/);
+    assert.match(html, /Expected result, not a live request/);
+    assert.match(html, /node client\.mjs/);
+    assert.doesNotMatch(html, /<script[^>]+src=|fetch\(|XMLHttpRequest/);
+  }
+  assert.equal(await (await request('/')).text(), 'App Service Builder / mcp-server\n');
+  assert.equal(await (await request('/health')).text(), 'OK\n');
+  assert.equal((await request('/mcp', { method: 'POST' })).status, 503);
+  assert.equal((await request('/demo', { method: 'POST' })).status, 404);
+  assert.equal((await request('/demo/', {})).status, 404);
+  assert.equal((await request('/demo', { headers: { Origin: 'https://evil.example' } })).status, 403);
+});
+
 test('HTTP initialize, initialized, list and bounded read-only call work without sessions', async (t) => {
   const request = await fixture(t);
   const rpc = (id, method, params) => request('/mcp', {

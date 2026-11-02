@@ -62,6 +62,11 @@ curl --fail http://127.0.0.1:8080/health
 
 The expected body is `OK`. Liveness is deliberately unauthenticated and does
 **not** prove that app authentication is configured or that a tool can be called.
+Open `http://127.0.0.1:8080/demo` for a responsive, read-only showcase of the
+tool, an illustrative JSON-RPC call, the route contract, and client setup.
+It does not send MCP requests, collect credentials, or report live tool status.
+The page uses local HTML/CSS with no external assets or additional dependencies;
+its light/dark appearance follows your system preference.
 In a terminal with the same `APP_API_TOKEN` set securely, run:
 
 ```sh
@@ -97,6 +102,7 @@ trap - EXIT
 | `APP_API_TOKEN` | Required for `POST /mcp`; at least 32 characters. The `Authorization` header must use the `Bearer` scheme with this exact token; comparison is timing-safe for equal-length values. |
 | `PUBLIC_ORIGIN` | Optional exact HTTPS origin, without a trailing slash, allowed when a client supplies `Origin`. Invalid configuration prevents startup. |
 | `GET /` | Public sample identifier: `App Service Builder / mcp-server`. |
+| `GET /demo` | Public, informational HTML showcase; examples are static, not live MCP calls. |
 | `GET /health` | Public `200` with `OK` body; liveness only. |
 | `POST /mcp` | JSON-RPC over stateless Streamable HTTP, with an 8192-byte request-body limit and JSON responses. Each request owns a fresh SDK server and transport. |
 | `text_length` | Accepts text of at most 1000 UTF-16 code units and counts Unicode code points. No file, network, or state access. |

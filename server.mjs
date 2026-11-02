@@ -1,9 +1,12 @@
 import { createServer } from 'node:http';
 import { timingSafeEqual } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { McpServer } from '@modelcontextprotocol/server';
 import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
 import * as z from 'zod';
+
+const demo = readFileSync(new URL('./demo.html', import.meta.url), 'utf8');
 
 /**
  * Each POST owns a fresh SDK server/transport, closed when its response finishes.
@@ -31,6 +34,14 @@ export function createApp({ env = process.env } = {}) {
     if (req.method === 'GET' && req.url === '/') {
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       return res.end('App Service Builder / mcp-server\n');
+    }
+    if (req.method === 'GET' && req.url?.split('?')[0] === '/demo') {
+      res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'X-Content-Type-Options': 'nosniff',
+        'Referrer-Policy': 'no-referrer',
+      });
+      return res.end(demo);
     }
     if (req.url !== '/mcp') return send(res, 404, 'not_found');
     if (req.method !== 'POST') return send(res, 405, 'post_only');

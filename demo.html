@@ -1,0 +1,224 @@
+<!doctype html>
+<!--
+THESIS: An inspectable MCP field guide, not a fictional monitoring dashboard.
+OWN-WORLD: Graphite workbench, rose annotations, precise code and oversized type.
+STORY: Understand the one tool, inspect its example, then use the real Node client.
+FIRST VIEWPORT: Split title and JSON specimen, with the route contract beneath.
+FORM: Brief-directed developer workbench; static, read-only and dependency-free.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Explore a small authenticated HTTP MCP server with one bounded, read-only Unicode text tool.">
+  <title>MCP server | App Service Builder</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 24px; }
+    body { margin: 0; background: var(--cp-bg); color: var(--cp-text); font: 16px/1.6 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    a { color: inherit; text-underline-offset: 5px; }
+    a:hover { color: var(--cp-accent); }
+    a:focus-visible, summary:focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 6px; }
+    code, pre, .mono { font-family: Consolas, "Courier New", Courier, monospace; }
+    .skip { position: absolute; top: -100px; left: 24px; padding: 8px 16px; background: var(--cp-surface); z-index: 2; }
+    .skip:focus { top: 16px; }
+    .shell { max-width: 1440px; margin: auto; padding: 0 64px; }
+    header { min-height: 100px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--cp-border-strong); }
+    .brand { display: flex; align-items: center; gap: 16px; font-size: 15px; font-weight: 650; }
+    .mark { display: grid; place-items: center; width: 40px; height: 40px; background: var(--cp-accent); color: var(--cp-accent-fg); font: bold 20px Consolas, monospace; border-radius: 10px; }
+    nav { display: flex; gap: 28px; font-size: 14px; }
+    nav a { text-decoration: none; }
+    main { padding-top: 64px; }
+    .intro { display: grid; grid-template-columns: 1fr 1.08fr; gap: 64px; align-items: center; padding-bottom: 64px; }
+    h1 { font-size: clamp(56px, 6.2vw, 88px); line-height: 1.02; letter-spacing: -.04em; font-weight: 650; margin: 0 0 28px; }
+    h1 span { color: var(--cp-accent); display: block; }
+    .lead { max-width: 38ch; font-size: 19px; line-height: 1.65; color: var(--cp-text-soft); margin: 0 0 32px; }
+    .actions { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .button { display: inline-flex; gap: 24px; padding: 14px 20px; border-radius: 10px; background: var(--cp-accent); color: var(--cp-accent-fg); font-weight: 650; text-decoration: none; }
+    .button:hover { background: var(--cp-accent-hover); color: var(--cp-accent-fg); }
+    .secondary { font-size: 14px; }
+    .specimen { border: 1px solid var(--cp-border-strong); background: var(--cp-surface); border-radius: 16px; overflow: hidden; min-width: 0; }
+    .specimen-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--cp-border); font-size: 13px; }
+    .specimen-head span:last-child { color: var(--cp-text-soft); }
+    .tool { padding: 28px 28px 24px; }
+    .tool h2 { font: 600 26px/1.2 Consolas, "Courier New", monospace; margin: 0 0 12px; }
+    .tool p { font-size: 14px; color: var(--cp-text-soft); margin: 0; }
+    .code-label { color: var(--cp-text-soft); font-size: 12px; display: block; margin-bottom: 12px; }
+    .request { padding: 20px 28px; background: var(--cp-surface-soft); border-block: 1px solid var(--cp-border); }
+    pre { font-size: 14px; line-height: 1.8; margin: 0; overflow-x: auto; }
+    .key { color: var(--cp-text-soft); }
+    .value { color: var(--cp-accent); }
+    .result { display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; gap: 24px; }
+    .result p { font-size: 13px; color: var(--cp-text-soft); margin: 4px 0 0; }
+    .result strong { font: 600 44px/1 Consolas, monospace; color: var(--cp-accent); }
+    .bounds { display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 12px; color: var(--cp-text-soft); padding: 14px 28px; border-top: 1px solid var(--cp-border); }
+    .contract { display: grid; grid-template-columns: .8fr 2fr; gap: 64px; border-top: 1px solid var(--cp-border-strong); padding: 36px 0 48px; }
+    h2 { font-size: 27px; letter-spacing: -.02em; line-height: 1.2; margin: 0 0 12px; }
+    .contract p, .connect p { color: var(--cp-text-soft); font-size: 14px; margin: 0; max-width: 64ch; }
+    .routes { margin: 0; }
+    .route { display: grid; grid-template-columns: 160px 1fr; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--cp-border); align-items: baseline; }
+    .route:first-child { padding-top: 0; }
+    dt { font: 14px/1.6 Consolas, monospace; }
+    dd { margin: 0; color: var(--cp-text-soft); font-size: 14px; }
+    .method { color: var(--cp-accent); }
+    .connect { border-top: 1px solid var(--cp-border-strong); display: grid; grid-template-columns: .8fr 2fr; gap: 64px; padding: 36px 0 48px; }
+    .connect pre { padding: 20px 24px; background: var(--cp-surface); border: 1px solid var(--cp-border); border-radius: 10px; margin: 16px 0; }
+    details { border-top: 1px solid var(--cp-border); margin-top: 24px; padding-top: 16px; }
+    summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+    details p { padding-top: 12px; }
+    footer { border-top: 1px solid var(--cp-border-strong); padding: 24px 0 32px; display: flex; justify-content: space-between; gap: 24px; font-size: 12px; color: var(--cp-text-soft); }
+    @media (max-width: 1000px) {
+      .shell { padding-inline: 32px; }
+      .intro { gap: 32px; }
+      .contract, .connect { gap: 32px; grid-template-columns: .8fr 1.6fr; }
+      .route { grid-template-columns: 132px 1fr; gap: 16px; }
+    }
+    @media (max-width: 700px) {
+      .shell { padding-inline: 24px; }
+      header { min-height: 88px; }
+      nav { gap: 16px; }
+      nav a:first-child { display: none; }
+      .brand { gap: 10px; font-size: 13px; }
+      .mark { width: 32px; height: 32px; }
+      main { padding-top: 40px; }
+      .intro { grid-template-columns: 1fr; gap: 40px; padding-bottom: 40px; }
+      h1 { font-size: 64px; }
+      .lead { font-size: 17px; }
+      .contract, .connect { grid-template-columns: 1fr; gap: 24px; padding-block: 32px; }
+      .route { grid-template-columns: 1fr; gap: 4px; padding-block: 16px; }
+      .tool, .request, .result { padding-inline: 20px; }
+      .specimen-head, .bounds { padding-inline: 20px; }
+      pre { font-size: 12px; }
+      footer { flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="shell">
+    <header>
+      <div class="brand"><span class="mark" aria-hidden="true">&gt;_</span>App Service Builder</div>
+      <nav aria-label="Main navigation">
+        <a href="#contract">HTTP contract</a>
+        <a href="https://github.com/Azure-Samples/app-service-builder-mcp-server">Source code &#8599;</a>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="intro" aria-labelledby="title">
+        <div>
+          <h1 id="title">MCP server.<br><span>Clear contract.</span></h1>
+          <p class="lead">An HTTP MCP server you can inspect end to end. One read-only tool. Bounded input. No file, network, or state access.</p>
+          <div class="actions">
+            <a class="button" href="#connect">Connect a client <span aria-hidden="true">&#8594;</span></a>
+            <a class="secondary" href="/health">Check liveness</a>
+          </div>
+        </div>
+        <section class="specimen" aria-labelledby="tool-name">
+          <div class="specimen-head"><code>POST /mcp</code><span>Illustrative tool call</span></div>
+          <div class="tool">
+            <h2 id="tool-name">text_length</h2>
+            <p>Count Unicode code points in a string.</p>
+          </div>
+          <div class="request">
+            <span class="code-label">JSON-RPC request example</span>
+            <pre><code>{
+  <span class="key">"jsonrpc"</span>: <span class="value">"2.0"</span>,
+  <span class="key">"id"</span>: 3,
+  <span class="key">"method"</span>: <span class="value">"tools/call"</span>,
+  <span class="key">"params"</span>: {
+    <span class="key">"name"</span>: <span class="value">"text_length"</span>,
+    <span class="key">"arguments"</span>: { <span class="key">"text"</span>: <span class="value">"Hello"</span> }
+  }
+}</code></pre>
+          </div>
+          <div class="result"><div><code>content[0].text = "5"</code><p>Expected result, not a live request</p></div><strong aria-label="5 code points">5</strong></div>
+          <div class="bounds"><span>Read-only</span><span>1,000 UTF-16 code units max</span><span>No I/O</span></div>
+        </section>
+      </section>
+      <section class="contract" id="contract" aria-labelledby="contract-title">
+        <div><h2 id="contract-title">Service routes.<br>No hidden machinery.</h2><p>Stateless Streamable HTTP.<br>JSON responses, no session persistence.</p></div>
+        <dl class="routes">
+          <div class="route"><dt><span class="method">GET</span> /</dt><dd>Public sample identifier. The original plain-text greeting.</dd></div>
+          <div class="route"><dt><span class="method">GET</span> /health</dt><dd>Public liveness only. An OK response does not verify authentication.</dd></div>
+          <div class="route"><dt><span class="method">POST</span> /mcp</dt><dd>Authenticated JSON-RPC. An 8,192-byte request-body limit.</dd></div>
+        </dl>
+      </section>
+      <section class="connect" id="connect" aria-labelledby="connect-title">
+        <div><h2 id="connect-title">Bring your client.</h2><p>This page is a read-only guide, not a browser MCP client.</p></div>
+        <div>
+          <p>Start the server locally and set <code>APP_API_TOKEN</code> securely in your environment. From a terminal with the same token, run the included Node client:</p>
+          <pre><code>node client.mjs</code></pre>
+          <p>The client initializes, lists <code>text_length</code>, then calls it with <code>Hello</code>. <a href="https://github.com/Azure-Samples/app-service-builder-mcp-server#run-locally">Read the setup instructions &#8599;</a></p>
+          <details>
+            <summary>Authentication and transport boundaries</summary>
+            <p><code>POST /mcp</code> requires a Bearer token of at least 32 characters. Missing or short server configuration fails closed. Supplied origins must match the configured allowlist. No CORS access is granted.</p>
+            <p>GET and DELETE on <code>/mcp</code> return 405. No standalone event stream, resumability, OAuth server, or long-lived workload support is demonstrated.</p>
+          </details>
+        </div>
+      </section>
+    </main>
+    <footer><span>HTTP MCP server / Node.js 24</span><span>Private Preview &middot; Development and test only</span></footer>
+  </div>
+</body>
+</html>
